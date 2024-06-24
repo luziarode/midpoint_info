@@ -298,12 +298,12 @@ class Player(BasePlayer):
     ])
 
     question_dif = models.IntegerField(
-        label="How easy or hard was it to answer the questions? Please select one answer.",
+        label="How easy or hard was it to answer the questions so far? Please select one answer.",
         choices=[[1, "Very difficult"], [2, "Somewhat difficult"], [3, "Partly interesting/partly uninteresting"],
                  [4, "Somewhat easy"], [5, "Very easy"]],
         widget=widgets.RadioSelect)
     question_length = models.IntegerField(
-        label="How did you find the length of the survey?",
+        label="How did you find the length of the survey so far?",
         choices=[[1, "Far too long"], [2, "Somewhat too Long"], [3, "Just right"],
                  [4, "Somewhat too short"], [5, "Far too short"]],
         widget=widgets.RadioSelect)
@@ -314,8 +314,8 @@ class Player(BasePlayer):
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slgihtly'],
-            [3, 'Increase Significantly']],
+            [4, 'Increase Slgihtly'],
+            [5, 'Increase Significantly']],
         )
 
     rent = models.IntegerField(
@@ -324,8 +324,8 @@ class Player(BasePlayer):
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slgihtly'],
-            [3, 'Increase Significantly']],
+            [4, 'Increase Slgihtly'],
+            [5, 'Increase Significantly']],
         )
 
     lending = models.IntegerField(
@@ -334,16 +334,16 @@ class Player(BasePlayer):
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slightly'],
-            [3, 'Increase Significantly']])
+            [4, 'Increase Slightly'],
+            [5, 'Increase Significantly']])
     interest = models.IntegerField(
         label="The interest rates on savings accounts:",
         choices=[
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slgihtly'],
-            [3, 'Increase Significantly']],
+            [4, 'Increase Slgihtly'],
+            [5, 'Increase Significantly']],
         )
 
     inflation = models.IntegerField(
@@ -352,8 +352,8 @@ class Player(BasePlayer):
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slightly'],
-            [3, 'Increase Significantly']],
+            [4, 'Increase Slightly'],
+            [5, 'Increase Significantly']],
         )
 
     property = models.IntegerField(
@@ -362,8 +362,8 @@ class Player(BasePlayer):
             [1, 'Decrease Significantly'],
             [2, 'Decrease Slightly'],
             [3, 'Stay roughly the same'],
-            [2, 'Increase Slgihtly'],
-            [3, 'Increase Significantly']],
+            [4, 'Increase Slgihtly'],
+            [5, 'Increase Significantly']],
         )
 
     survey_complete = models.BooleanField(Initial=False)
@@ -998,6 +998,20 @@ class bins4(Page):
 
 # demographics
 
+class Demo7(Page):
+    form_model = "player"
+    form_fields = ["question_dif", "question_length"]
+
+    @staticmethod
+    def is_displayed(player: Player):
+        if player.treatment == 1 or player.treatment == 3:
+            if (player.stop1 and player.stop2 and player.stop3) == True:
+                return True
+            else:
+                return False
+        else:
+            return True
+
 
 class Demo1(Page):
     form_model = "player"
@@ -1138,20 +1152,6 @@ class Demo6(Page):
             return True
 
 
-class Demo7(Page):
-    form_model = "player"
-    form_fields = ["question_dif", "question_length"]
-
-    @staticmethod
-    def is_displayed(player: Player):
-        if player.treatment == 1 or player.treatment == 3:
-            if (player.stop1 and player.stop2 and player.stop3) == True:
-                return True
-            else:
-                return False
-        else:
-            return True
-
 
 class Final(Page):
     form_model = "player"
@@ -1216,5 +1216,5 @@ class FinanceIntro(Page):
 
 
 page_sequence = [Instructions, Point, InflationsErwartung, Confirmation, InflationsErwartung3, Bisection1, Q25Screen,
-                 Q25_1, Q75Screen, Q75_1, Bins, bins4, DemoIntro, Demo1, FinanceIntro, Demo2, Demo3, Demo4, Demo5, Demo6, Demo7, Final,
+                 Q25_1, Q75Screen, Q75_1, Bins, bins4, Demo7, DemoIntro, Demo1, FinanceIntro, Demo2, Demo3, Demo4, Demo5, Demo6, Final,
                  Code]
